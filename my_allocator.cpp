@@ -181,7 +181,7 @@ int main(int, char *[])
         std::cout <<"\n";
 
         std::cout << "\n=== Testing std::map with my allocator ===\n";\
-        std::map<ull, ull, std::less<>, MyAllocator<std::pair<ull, ull>, 10>> standard_map_my_alloc;
+        std::map<ull, ull, std::less<>, MyAllocator<std::pair<const ull, ull>, 10>> standard_map_my_alloc;
         [&standard_map_my_alloc] {
             for (ull i = 0; i < 10; ++i) {
                 standard_map_my_alloc[i] = factorial(i);
