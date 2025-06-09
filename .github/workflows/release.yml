@@ -1,0 +1,42 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ "main" ]
+    
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y g++
+
+      - name: Build
+        run: |
+          g++ -std=c++17 -O2 my_allocator.cpp -o my_allocator
+          chmod +x my_allocator
+
+      - name: Create Tag
+        id: tag
+        run: |
+          TAG="v1.0.${GITHUB_RUN_NUMBER}"
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+          git tag $TAG
+          git push origin $TAG
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.TAG }}
+          files: my_allocator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
